@@ -10,7 +10,7 @@ import numpy as np
 from gui import AppGui
 from linear_regression_model import LinearRegressionModel
 
-from input_vactors import InputVectors
+from input_vectors import InputVectors
 
 
 
@@ -181,7 +181,8 @@ class App:
                     self.gui.obs_entry.insert(0, data_X.shape[0])
                     self.gui.feat_entry.delete(0, tk.END)
                     self.gui.feat_entry.insert(0, data_X.shape[1])
-
+                    self.gui.dimensions_label.config({"text": "✓", "foreground": "green"})
+                    self.save_state()
             case _:
                 pass
 
@@ -200,7 +201,6 @@ class App:
         self.gui.update_display(self.gui.b_display, np.array([]), 0)
         self.gui.update_display(self.gui.b_hat_display, np.array([]), 0)
         self.gui.update_display(self.gui.noise_display, np.array([]), 0)
-
         self.gui.dimensions_label.config({"text": "⤫", "foreground": "red"})
         self.gui.feat_entry.delete(0, tk.END)
         self.gui.obs_entry.delete(0, tk.END)
@@ -211,6 +211,7 @@ class App:
         self.gui.b_max_entry.delete(0, tk.END)
         self.gui.b_precision_entry.delete(0, tk.END)
         self.gui.b_0_entry.delete(0, tk.END)
+        self.gui.b_0_entry.insert(0, "1")
         self.gui.noise_e_entry.delete(0, tk.END)
         self.gui.noise_e_entry.insert(0, "0")
         self.gui.noise_sigma_entry.delete(0, tk.END)
@@ -334,18 +335,15 @@ class App:
                     self.gui.b_max_entry.delete(0, tk.END)
                     messagebox.showerror("Error", f"Invalid range/precision: {e}")
                     return
-            # case "Manual":
-            #     self.state.data_B = InputVectors.input_matrix_gui(
-            #         "Enter Coefficients B", self.state.n_feats, 1
-            #     )
+            case "Manual":
+                self.state.data_B = self.input_handler.input_matrix_gui(
+                    "Enter Coefficients B", self.state.n_feats, 1
+                )
             case _:
                 pass
-
-        # self.state.data_B = np.insert(self.state.data_B, 0, self.state.b_0, axis=0)
-
-
+        target_B = np.insert(self.state.data_B, 0, self.state.b_0, axis=0)
         self.gui.update_display(
-            self.gui.b_display, self.state.data_B, self.state.b_precision
+            self.gui.b_display, target_B, self.state.b_precision
         )
         self.save_state()
 

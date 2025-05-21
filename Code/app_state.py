@@ -14,4 +14,4 @@ class AppState:
     noise: np.ndarray = ndarray_field()
     x_precision: int = 9
     b_precision: int = 9
-    b_0: float = 0.0
+    b_0: float = 1.0

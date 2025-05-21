@@ -105,11 +105,12 @@ class AppGui:
 
         ttk.Label(frame, text="Bias(b_0):").grid(row=0, column=0, padx=2, pady=2)
         self.b_0_entry = ttk.Entry(frame, width=8)
+        self.b_0_entry.insert(0, "1")
         self.b_0_entry.grid(row=0, column=1, padx=2, pady=2)
 
         ttk.Label(frame, text="Method:").grid(row=1, column=0, padx=2, pady=2)
         self.b_choice = ttk.Combobox(
-            frame, values=["Generate", "Manual", "File"], width=10, state="readonly"
+            frame, values=["Generate", "Manual"], width=10, state="readonly"
         )
         self.b_choice.grid(row=1, column=1, padx=2, pady=2)
         self.b_choice.bind("<<ComboboxSelected>>", self.toggle_b_range_fields)

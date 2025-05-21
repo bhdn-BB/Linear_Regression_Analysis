@@ -24,8 +24,7 @@ class LinearRegressionModel:
         design_matrix: np.ndarray, Y: np.ndarray
     ) -> np.ndarray:
         A = np.hstack([np.ones((design_matrix.shape[0], 1)), design_matrix])
-        temp = (np.linalg.pinv(A.T @ A) @ A.T) @ Y
-        return temp
+        return (np.linalg.pinv(A.T @ A) @ A.T) @ Y
 
     @staticmethod
     def calculate_metrics(B_true: np.ndarray, B_pred: np.ndarray) -> dict:

@@ -13,10 +13,7 @@ class InputVectors:
         self.root = root
 
     def input_matrix_gui(self, title: str, rows: int, cols: int) -> np.ndarray:
-        if (
-            rows > self.MAX_MATRIX_SIZE
-            or cols > self.MAX_MATRIX_SIZE
-        ):
+        if rows > self.MAX_MATRIX_SIZE or cols > self.MAX_MATRIX_SIZE:
             messagebox.showerror(
                 "Error",
                 f"Maximum dimension for manual input is {self.MAX_MATRIX_SIZE}",
@@ -26,50 +23,34 @@ class InputVectors:
         dialog = tk.Toplevel(self.root)
         dialog.title(title)
         dialog.grab_set()
-        dialog.resizable(True, True)
+        dialog.resizable(False, False)
 
         entry_width = 8
         label_width = 6
         padding = 10
         button_height = 40
-        window_width = min(
-            max(cols * (entry_width * 10 + label_width * 10 + padding) + 40, 300), 800
-        )
-        window_height = min(max(rows * 40 + button_height + 60, 200), 600)
+
+        window_width = min(max(cols * (entry_width * 10 + label_width * 15 + 15 * padding), 300), 1200)
+        window_height = min(max(rows * 30 + button_height + 60, 200), 600)
         dialog.geometry(f"{int(window_width)}x{int(window_height)}")
 
-        canvas = tk.Canvas(dialog)
-        scrollbar_y = ttk.Scrollbar(dialog, orient="vertical", command=canvas.yview)
-        scrollbar_x = ttk.Scrollbar(dialog, orient="horizontal", command=canvas.xview)
-        scrollable_frame = ttk.Frame(canvas)
-
-        scrollable_frame.bind(
-            "<Configure>", lambda _: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-
-        canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
-
-        scrollbar_y.pack(side="right", fill="y")
-        scrollbar_x.pack(side="bottom", fill="x")
-        canvas.pack(side="left", fill="both", expand=True)
-        canvas_frame = canvas.create_window(
-            (0, 0), window=scrollable_frame, anchor="nw"
-        )
+        content_frame = ttk.Frame(dialog)
+        content_frame.pack(padx=10, pady=10)
 
         entries = [
-            [ttk.Entry(scrollable_frame, width=entry_width) for _ in range(cols)]
+            [ttk.Entry(content_frame, width=entry_width) for _ in range(cols)]
             for _ in range(rows)
         ]
 
         for i in range(rows):
             for j in range(cols):
-                ttk.Label(scrollable_frame, text=f"[{i + 1},{j + 1}]").grid(
+                ttk.Label(content_frame, text=f"[{i + 1},{j + 1}]").grid(
                     row=i, column=j * 2, padx=2, pady=2
                 )
                 entries[i][j].grid(row=i, column=j * 2 + 1, padx=2, pady=2)
 
         button_frame = ttk.Frame(dialog)
-        button_frame.pack(side="bottom", fill="x", padx=5, pady=5)
+        button_frame.place(relx=0, rely=1.0, x=20, y=-60, anchor="sw")
 
         result = []
 
@@ -80,31 +61,16 @@ class InputVectors:
                 row = []
                 for count_col, entry in enumerate(row_entries):
                     try:
-                        # if '.' is float(entry.get().strip()):
-                        #     decimals = s.split('.')[1]
-                        #     if len(decimals.rstrip('0')) > self.MAX_PRECISION:
-                        #         messagebox.showerror(
-                        #             "Error", f"Precision must be between {self.MIN_PRECISION} and {self.MAX_PRECISION}"
-                        #         )
-                        #         return
                         row.append(float(entry.get().strip()))
                     except ValueError:
                         messagebox.showerror(
-                            "Error", f"Enter valid numbers {count_row + 1}{count_col + 1}"
+                            "Error", f"Enter valid numbers [{count_row + 1},{count_col + 1}]"
                         )
                         return
                 matrix.append(row)
             result = matrix
             dialog.destroy()
-
-        ttk.Button(button_frame, text="Submit", command=submit).pack(
-            side="left", padx=5
-        )
-
-        def on_canvas_configure(event):
-            canvas.itemconfig(canvas_frame, width=event.width)
-
-        canvas.bind("<Configure>", on_canvas_configure)
+        ttk.Button(button_frame, text="Submit", command=submit).pack(side="left", padx=5)
         dialog.wait_window()
         return np.array(result)
 
