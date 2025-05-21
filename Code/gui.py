@@ -1,7 +1,5 @@
 import tkinter as tk
-from random import random
-from tkinter import filedialog, messagebox, ttk
-
+from tkinter import ttk
 import numpy as np
 
 
@@ -228,5 +226,3 @@ class AppGui:
         self.rmse_label.config(text=f"RMSE: {metrics['rmse']:.9f}")
         self.mae_label.config(text=f"MAE: {metrics['mae']:.9f}")
         self.mape_label.config(text=f"MAPE: {metrics['mape']:.9f}%")
-
-

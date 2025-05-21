@@ -9,23 +9,7 @@ import numpy as np
 
 from gui import AppGui
 from linear_regression_model import LinearRegressionModel
-
 from input_vectors import InputVectors
-
-
-
-# @dataclasses.dataclass()
-# class AppState:
-#     n_obs: int = 0
-#     n_feats: int = 0
-#     data_X: np.ndarray = ndarray_field()
-#     data_B: np.ndarray = ndarray_field()
-#     data_y: np.ndarray = ndarray_field()
-#     B_hat: np.ndarray = ndarray_field()
-#     noise: np.ndarray = ndarray_field()
-#     x_precision: int = 9
-#     b_precision: int = 9
-#     b_0: float = 0.0
 
 
 class App:
@@ -93,7 +77,6 @@ class App:
             self.gui.dimensions_label.config({"text": "⤫", "foreground": "red"})
             messagebox.showerror("Error", f"Invalid dimensions: {e}")
             return
-
 
     def apply_X(self):
 
