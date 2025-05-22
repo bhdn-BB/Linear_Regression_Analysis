@@ -7,7 +7,7 @@ from tkinter import messagebox
 from app_state import AppState
 import numpy as np
 
-from gui import AppGui
+from app_gui import AppGui
 from linear_regression_model import LinearRegressionModel
 from input_vectors import InputVectors
 
@@ -350,7 +350,7 @@ class App:
         Y_np = self.state.data_Y
         try:
             self.state.B_hat = LinearRegressionModel.calculate_B_hat(
-                X_np, Y_np
+                X_np, Y_np, self.state.b_0
             )
             np.round(self.state.B_hat, self.state.b_precision)
         except Exception as e:

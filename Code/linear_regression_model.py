@@ -20,10 +20,11 @@ class LinearRegressionModel:
 
     @staticmethod
     def calculate_B_hat(
-        design_matrix: np.ndarray, Y: np.ndarray
+            design_matrix: np.ndarray, Y: np.ndarray, bias: float
     ) -> np.ndarray:
-        A = np.hstack([np.ones((design_matrix.shape[0], 1)), design_matrix])
-        return (np.linalg.pinv(A.T @ A) @ A.T) @ Y
+        bias_column = np.full((design_matrix.shape[0], 1), bias)
+        A = np.hstack([bias_column, design_matrix])
+        return np.linalg.pinv(A.T @ A) @ A.T @ Y
 
     @staticmethod
     def calculate_metrics(B_true: np.ndarray, B_pred: np.ndarray) -> dict:
