@@ -237,12 +237,12 @@ class App:
             return
 
         self.state.noise = LinearRegressionModel.generate_noise(
-            noise_e, noise_sigma, self.state.n_obs
+            noise_e, noise_sigma, self.state.n_obs, self.MAX_PRECISION
         )
         self.gui.update_display(
             self.gui.noise_display,
             np.array([[n] for n in self.state.noise]),
-            self.state.b_precision,
+            self.MAX_PRECISION,
         )
         self.save_state()
 
@@ -350,7 +350,7 @@ class App:
         Y_np = self.state.data_Y
         try:
             self.state.B_hat = LinearRegressionModel.calculate_B_hat(
-                X_np, Y_np, self.state.b_0
+                X_np, Y_np
             )
             np.round(self.state.B_hat, self.state.b_precision)
         except Exception as e:
@@ -363,7 +363,7 @@ class App:
         self.gui.update_display(
             self.gui.b_hat_display,
             self.state.B_hat,
-            self.state.b_precision,
+            self.MAX_PRECISION,
         )
 
         B_pred = self.state.B_hat

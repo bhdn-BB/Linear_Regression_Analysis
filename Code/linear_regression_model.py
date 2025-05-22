@@ -6,9 +6,9 @@ class LinearRegressionModel:
 
     @staticmethod
     def generate_noise(
-        expected_value: float, standard_deviation: float, size: int
+        expected_value: float, standard_deviation: float, size: int, precision: int
     ) -> np.ndarray:
-        return np.random.normal(expected_value, standard_deviation, size)
+        return np.round(np.random.normal(expected_value, standard_deviation, size), precision)
 
     @staticmethod
     def calculate_y(
@@ -20,11 +20,10 @@ class LinearRegressionModel:
 
     @staticmethod
     def calculate_B_hat(
-            design_matrix: np.ndarray, Y: np.ndarray, bias: float
+        design_matrix: np.ndarray, Y: np.ndarray
     ) -> np.ndarray:
-        bias_column = np.full((design_matrix.shape[0], 1), bias)
-        A = np.hstack([bias_column, design_matrix])
-        return np.linalg.pinv(A.T @ A) @ A.T @ Y
+        A = np.hstack([np.ones((design_matrix.shape[0], 1)), design_matrix])
+        return (np.linalg.pinv(A.T @ A) @ A.T) @ Y
 
     @staticmethod
     def calculate_metrics(B_true: np.ndarray, B_pred: np.ndarray) -> dict:
