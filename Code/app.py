@@ -345,13 +345,9 @@ class App:
             messagebox.showerror("Error", "Noise cannot be None")
             return
 
-
-
         X_np = self.state.data_X
         B_np = self.state.data_B
         noise_np = self.state.noise
-
-
 
         self.state.data_Y = LinearRegressionModel.calculate_y(
             X_np, B_np, self.state.b_0, noise_np

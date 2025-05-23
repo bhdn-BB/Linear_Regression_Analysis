@@ -70,6 +70,7 @@ class InputVectors:
                 matrix.append(row)
             result = matrix
             dialog.destroy()
+
         ttk.Button(button_frame, text="Submit", command=submit).pack(side="left", padx=5)
         dialog.wait_window()
         return np.array(result)
@@ -80,7 +81,6 @@ class InputVectors:
     ) -> np.ndarray:
         mat = np.random.uniform(min_val, max_val, size=(rows, cols))
         return np.round(mat, precision)
-
 
     @staticmethod
     def load_from_file() -> np.ndarray | None:
