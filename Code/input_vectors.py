@@ -78,15 +78,9 @@ class InputVectors:
     def generate_random_matrix(
             min_val: float, max_val: float, rows: int, cols: int, precision: int
     ) -> np.ndarray:
-        return np.array(
-            [
-                [
-                    round(random.uniform(min_val, max_val), precision)
-                    for _ in range(cols)
-                ]
-                for _ in range(rows)
-            ]
-        )
+        mat = np.random.uniform(min_val, max_val, size=(rows, cols))
+        return np.round(mat, precision)
+
 
     @staticmethod
     def load_from_file() -> np.ndarray | None:

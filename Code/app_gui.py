@@ -10,7 +10,8 @@ class AppGui:
         self.setup_gui()
 
     def setup_gui(self):
-        self.root.title("Linear Regression")
+
+        self.root.title("Linear Regression Analysis")
 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -26,19 +27,19 @@ class AppGui:
         self.root.grid_rowconfigure(0, weight=0)
         self.root.grid_rowconfigure((1, 2, 3, 4), weight=1)
 
-        self.setup_dataset_label()
+        self.setup_title_label()
         self.setup_dimensions_panel()
         self.setup_input_panels()
         self.setup_results_panel()
 
-    def setup_dataset_label(self):
-        label = ttk.Label(self.root, text="Dataset:", font=("Arial", 14, "bold"))
-        label.grid(row=0, column=0, columnspan=5, padx=5, pady=0, sticky="w")
+    def setup_title_label(self):
+        label = ttk.Label(self.root, text="Welcome to the Linear Regression Analysis App", font=("Arial", 14, "bold"), anchor="center")
+        label.grid(row=0, column=0, columnspan=5, padx=5, pady=2, sticky="ew")
 
     def setup_dimensions_panel(self):
         frame = ttk.LabelFrame(
             self.root,
-            text=f"Bounds for dimensions: [{self.app.MIN_DIMENSION_DATASET}; {self.app.MAX_DIMENSION_DATASET}]",
+            text=f"Dataset dimensions are within the range[{self.app.MIN_DIMENSION_DATASET};{self.app.MAX_DIMENSION_DATASET}]",
         )
         frame.grid(row=1, column=0, columnspan=5, padx=5, pady=2, sticky="ew")
 
@@ -65,7 +66,7 @@ class AppGui:
         self.setup_noise_panel()
 
     def setup_matrix_x_panel(self):
-        frame = ttk.LabelFrame(self.root, text="Feature Matrix X")
+        frame = ttk.LabelFrame(self.root, text="Design matrix X")
         frame.grid(row=2, column=0, columnspan=2, padx=5, pady=2, sticky="nsew")
 
         ttk.Label(frame, text="Method:").grid(row=0, column=0, padx=2, pady=2)
@@ -96,12 +97,30 @@ class AppGui:
         ttk.Button(frame, text="Apply", command=self.app.apply_X).grid(
             row=0, column=2, padx=2, pady=2
         )
+        ttk.Label(
+            frame,
+            text=(
+                f"1) File (.csv) input will automatically set the size\n"
+                f"2) X values within the range of [{self.app.MIN_VAL};{self.app.MAX_VAL}]\n"
+                f"3) Maximum precision - {self.app.MAX_PRECISION} decimal places"
+            ),
+            anchor="w",
+            justify="left",
+            wraplength=600
+        ).grid(
+            row=2,
+            column=0,
+            columnspan=3,
+            padx=2,
+            pady=(10, 2),
+            sticky="w"
+        )
 
     def setup_coefficients_b_panel(self):
         frame = ttk.LabelFrame(self.root, text="Coefficients B")
         frame.grid(row=2, column=2, columnspan=1, padx=5, pady=2, sticky="nsew")
 
-        ttk.Label(frame, text="Bias(b_0):").grid(row=0, column=0, padx=2, pady=2)
+        ttk.Label(frame, text="Bias(В₀):").grid(row=0, column=0, padx=2, pady=2)
         self.b_0_entry = ttk.Entry(frame, width=8)
         self.b_0_entry.insert(0, "1")
         self.b_0_entry.grid(row=0, column=1, padx=2, pady=2)
@@ -134,28 +153,67 @@ class AppGui:
         ttk.Button(frame, text="Apply", command=self.app.apply_B).grid(
             row=1, column=2, padx=2, pady=2
         )
+        ttk.Label(
+            frame,
+            text=(
+                f"1) B values within the range of [{self.app.MIN_VAL};{self.app.MAX_VAL}]\n"
+                f"2) Maximum precision - {self.app.MAX_PRECISION} decimal places"
+            ),
+            anchor="w",
+            justify="left",
+            wraplength=350,
+        ).grid(
+            row=3,
+            column=0,
+            columnspan=3,
+            padx=2,
+            pady=(10, 2),
+            sticky="w"
+        )
 
     def setup_noise_panel(self):
         frame = ttk.LabelFrame(self.root, text="Noise (ε)")
         frame.grid(row=2, column=3, padx=5, pady=2, sticky="nsew")
 
-        ttk.Label(frame, text="E:").grid(row=0, column=0, padx=2, pady=2)
-        self.noise_e_entry = ttk.Entry(frame, width=8)
-        self.noise_e_entry.insert(0, "0")
-        self.noise_e_entry.grid(row=0, column=1, padx=2, pady=2)
+        frame.columnconfigure(0, weight=1)
+        frame.columnconfigure(1, weight=1)
 
-        ttk.Label(frame, text="σ:").grid(row=1, column=0, padx=2, pady=2)
-        self.noise_sigma_entry = ttk.Entry(frame, width=8)
+        ttk.Label(frame, text="E:").grid(row=0, column=0, padx=2, pady=2, sticky="e")
+        self.noise_e_entry = ttk.Entry(frame, width=10)
+        self.noise_e_entry.insert(0, "0")
+        self.noise_e_entry.grid(row=0, column=1, padx=2, pady=2, sticky="w")
+
+        ttk.Label(frame, text="σ:").grid(row=1, column=0, padx=2, pady=2, sticky="e")
+        self.noise_sigma_entry = ttk.Entry(frame, width=10)
         self.noise_sigma_entry.insert(0, "1")
-        self.noise_sigma_entry.grid(row=1, column=1, padx=2, pady=2)
+        self.noise_sigma_entry.grid(row=1, column=1, padx=2, pady=2, sticky="w")
 
         ttk.Button(frame, text="Apply", command=self.app.apply_noise).grid(
-            row=2, column=0, columnspan=2, padx=2, pady=2
+            row=2, column=0, columnspan=2, padx=2, pady=5
+        )
+
+        ttk.Label(
+            frame,
+            text=(
+                f"1) E values in the range [{self.app.LOWER_LIMIT_E}, {self.app.UPPER_LIMIT_E}]\n"
+                f"2) σ values in the range [{self.app.LOWER_LIMIT_SIGMA}, {self.app.UPPER_LIMIT_SIGMA}]\n"
+                f"3) Precision: 9 decimal places"
+            ),
+            anchor="w",
+            justify="left",
+            wraplength=280
+        ).grid(
+            row=3,
+            column=0,
+            columnspan=2,
+            padx=2,
+            pady=(10, 2),
+            sticky="w"
         )
 
     def setup_results_panel(self):
         self.x_display = self.create_matrix_display(
-            "Feature Matrix X", 4, 0, height=30, width=70
+            "Design matrix X", 4, 0, height=30, width=70
         )
         self.b_display = self.create_matrix_display(
             "Coefficients B", 4, 2, height=30, width=25

@@ -26,7 +26,7 @@ class App:
     UPPER_LIMIT_SIGMA = 100
 
     MIN_PRECISION = 0
-    MAX_PRECISION = 10
+    MAX_PRECISION = 9
 
     def __init__(self, root: tk.Tk):
         self.input_handler = InputVectors(root)
@@ -151,7 +151,7 @@ class App:
                     messagebox.showerror("Error", "Apply X dimensions first")
                     return
                 self.state.data_X = self.input_handler.input_matrix_gui(
-                    "Enter Feature Matrix X", self.state.n_obs, self.state.n_feats
+                    "Enter design matrix X", self.state.n_obs, self.state.n_feats
                 )
 
             case "File":
@@ -175,7 +175,7 @@ class App:
             )
             self.save_state()
         else:
-            messagebox.showerror("Error", "Failed to load Feature Matrix X")
+            messagebox.showerror("Error", "Failed to load design matrix X")
 
     def clear_state(self):
         self.state = AppState()
@@ -199,7 +199,10 @@ class App:
         self.gui.noise_e_entry.insert(0, "0")
         self.gui.noise_sigma_entry.delete(0, tk.END)
         self.gui.noise_sigma_entry.insert(0, "1")
-        self.gui.update_metrics({"mape": 0, "mse": 0, "rmse": 0, "mae": 0})
+        self.gui.mse_label.config(text="MSE: N/A")
+        self.gui.rmse_label.config(text="RMSE: N/A")
+        self.gui.mae_label.config(text="MAE: N/A")
+        self.gui.mape_label.config(text="MAPE: N/A")
 
     def apply_noise(self):
         if not self.state.n_obs or not self.state.n_feats:
@@ -331,9 +334,24 @@ class App:
         self.save_state()
 
     def calculate_y_and_B_hat(self):
+
+        if not np.any(self.state.data_X):
+            messagebox.showerror("Error", "Data X cannot be None")
+            return
+        if not np.any(self.state.data_B):
+            messagebox.showerror("Error", "Data B cannot be None")
+            return
+        if not np.any(self.state.noise):
+            messagebox.showerror("Error", "Noise cannot be None")
+            return
+
+
+
         X_np = self.state.data_X
         B_np = self.state.data_B
         noise_np = self.state.noise
+
+
 
         self.state.data_Y = LinearRegressionModel.calculate_y(
             X_np, B_np, self.state.b_0, noise_np
