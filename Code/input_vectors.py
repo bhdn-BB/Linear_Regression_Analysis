@@ -6,13 +6,25 @@ import numpy as np
 
 class InputVectors:
     MAX_MATRIX_SIZE = 10
-    MAX_PRECISION = 9
-    MIN_PRECISION = 0
 
+    # <summary>
+    # Ініціалізує екземпляр InputVectors з посиланням на головне вікно Tkinter.
+    # </summary>
+    # <param name="root" type="tk.Tk">Головне вікно Tkinter</param>
     def __init__(self, root: tk.Tk):
         self.root = root
 
-    def input_matrix_gui(self, title: str, rows: int, cols: int) -> np.ndarray:
+    # <summary>
+    # Відображає вікно діалогове для ручного введення матриці із заданими розмірами.
+    # Перевіряє правильність введення і повертає матрицю як NumPy-масив.
+    # </summary>
+    # <param name="title" type="str">Заголовок діалогу введення</param>
+    # <param name="rows" type="int">Кількість рядків у матриці</param>
+    # <param name="cols" type="int">Кількість стовпців у матриці</param>
+    # <returns type="np.ndarray">Матриця як NumPy-масив або порожній масив у разі помилки</returns>
+    def input_matrix_gui(
+            self, title: str, rows: int, cols: int, precision: int
+    ) -> np.ndarray:
         if rows > self.MAX_MATRIX_SIZE or cols > self.MAX_MATRIX_SIZE:
             messagebox.showerror(
                 "Error",
@@ -54,6 +66,10 @@ class InputVectors:
 
         result = []
 
+        # <summary>
+        # Зчитує введені значення з полів, перевіряє їх на коректність,
+        # формує матрицю та закриває діалогове вікно.
+        # </summary>
         def submit():
             nonlocal result
             matrix = []
@@ -73,8 +89,17 @@ class InputVectors:
 
         ttk.Button(button_frame, text="Submit", command=submit).pack(side="left", padx=5)
         dialog.wait_window()
-        return np.array(result)
+        return np.round(np.array(result), precision)
 
+    # <summary>
+    # Генерує випадкову матрицю з заданими розмірами, діапазоном значень і точністю округлення.
+    # </summary>
+    # <param name="min_val" type="float">Мінімальне значення</param>
+    # <param name="max_val" type="float">Максимальне значення</param>
+    # <param name="rows" type="int">Кількість рядків</param>
+    # <param name="cols" type="int">Кількість стовпців</param>
+    # <param name="precision" type="int">Кількість знаків після коми для округлення</param>
+    # <returns type="np.ndarray">Згенерована та округлена матриця</returns>
     @staticmethod
     def generate_random_matrix(
             min_val: float, max_val: float, rows: int, cols: int, precision: int
@@ -82,6 +107,10 @@ class InputVectors:
         mat = np.random.uniform(min_val, max_val, size=(rows, cols))
         return np.round(mat, precision)
 
+    # <summary>
+    # Відкриває діалог для завантаження матриці з текстового файлу з роздільниками-комами.
+    # </summary>
+    # <returns type="np.ndarray | None">Завантажена матриця або порожній масив, якщо скасовано або коректно задано</returns>
     @staticmethod
     def load_from_file() -> np.ndarray | None:
         file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])

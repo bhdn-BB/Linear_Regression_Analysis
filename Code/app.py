@@ -151,7 +151,7 @@ class App:
                     messagebox.showerror("Error", "Apply X dimensions first")
                     return
                 self.state.data_X = self.input_handler.input_matrix_gui(
-                    "Enter design matrix X", self.state.n_obs, self.state.n_feats
+                    "Enter design matrix X", self.state.n_obs, self.state.n_feats, self.MAX_PRECISION
                 )
 
             case "File":
@@ -323,7 +323,7 @@ class App:
                     return
             case "Manual":
                 self.state.data_B = self.input_handler.input_matrix_gui(
-                    "Enter Coefficients B", self.state.n_feats, 1
+                    "Enter Coefficients B", self.state.n_feats, 1, self.MAX_PRECISION
                 )
             case _:
                 pass
