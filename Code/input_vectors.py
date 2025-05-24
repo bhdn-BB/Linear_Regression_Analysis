@@ -118,7 +118,6 @@ class InputVectors:
             return np.array([])
         try:
             data = np.loadtxt(file_path, delimiter=",", dtype=float)
-
             return data
         except ValueError:
             messagebox.showerror("Error", "Invalid numbers in file")

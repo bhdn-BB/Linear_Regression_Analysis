@@ -4,13 +4,19 @@ import numpy as np
 
 
 class AppGui:
+
     def __init__(self, root: tk.Tk, app):
+        """
+        Ініціалізує головне вікно застосунку та викликає метод налаштування інтерфейсу.
+        """
         self.root = root
         self.app = app
         self.setup_gui()
 
     def setup_gui(self):
-
+        """
+        Налаштовує основне вікно GUI: розміри, заголовок, сітку та викликає методи для створення панелей.
+        """
         self.root.title("Linear Regression Analysis")
 
         screen_width = self.root.winfo_screenwidth()
@@ -33,10 +39,16 @@ class AppGui:
         self.setup_results_panel()
 
     def setup_title_label(self):
+        """
+        Створює заголовок застосунку з жирним шрифтом.
+        """
         label = ttk.Label(self.root, text="Welcome to the Linear Regression Analysis App", font=("Arial", 14, "bold"), anchor="center")
         label.grid(row=0, column=0, columnspan=5, padx=5, pady=2, sticky="ew")
 
     def setup_dimensions_panel(self):
+        """
+        Створює панель для введення розмірів датасету: кількість спостережень та ознак.
+        """
         frame = ttk.LabelFrame(
             self.root,
             text=f"Dataset dimensions are within the range[{self.app.MIN_DIMENSION_DATASET};{self.app.MAX_DIMENSION_DATASET}]",
@@ -61,11 +73,17 @@ class AppGui:
         )
 
     def setup_input_panels(self):
+        """
+        Викликає методи для створення панелей: матриця X, коефіцієнти B, шум.
+        """
         self.setup_matrix_x_panel()
         self.setup_coefficients_b_panel()
         self.setup_noise_panel()
 
     def setup_matrix_x_panel(self):
+        """
+        Створює панель введення матриці X: метод, діапазон значень, точність.
+        """
         frame = ttk.LabelFrame(self.root, text="Design matrix X")
         frame.grid(row=2, column=0, columnspan=2, padx=5, pady=2, sticky="nsew")
 
@@ -117,6 +135,9 @@ class AppGui:
         )
 
     def setup_coefficients_b_panel(self):
+        """
+        Створює панель для задання коефіцієнтів B: включаючи зсув, метод вводу та діапазон.
+        """
         frame = ttk.LabelFrame(self.root, text="Coefficients B")
         frame.grid(row=2, column=2, columnspan=1, padx=5, pady=2, sticky="nsew")
 
@@ -172,6 +193,9 @@ class AppGui:
         )
 
     def setup_noise_panel(self):
+        """
+        Створює панель для введення шуму: математичне сподівання та стандартне відхилення.
+        """
         frame = ttk.LabelFrame(self.root, text="Noise (ε)")
         frame.grid(row=2, column=3, padx=5, pady=2, sticky="nsew")
 
@@ -212,6 +236,9 @@ class AppGui:
         )
 
     def setup_results_panel(self):
+        """
+        Створює панель для відображення результатів: матриць X, B, шуму, y та оцінених коефіцієнтів B̂.
+        """
         self.x_display = self.create_matrix_display(
             "Design matrix X", 4, 0, height=30, width=70
         )
@@ -248,6 +275,10 @@ class AppGui:
     def create_matrix_display(
         self, title: str, row: int, col: int, height: int, width: int
     ) -> tk.Text:
+        # Створює текстове поле з прокруткою для виводу матриці.
+        # title — заголовок рамки
+        # row, col — координати в сітці
+        # height, width — розміри текстового поля
         frame = ttk.LabelFrame(self.root, text=title)
         frame.grid(row=row, column=col, padx=5, pady=2, sticky="nsew")
         text = tk.Text(frame, height=height, width=width, state="disabled", wrap="none")
@@ -260,18 +291,26 @@ class AppGui:
         return text
 
     def toggle_x_range_fields(self, _=None):
+        # Перемикає відображення полів для введення діапазону X,
+        # якщо обрано метод генерації.
         if self.x_choice.get() == "Generate":
             self.x_range_frame.grid()
         else:
             self.x_range_frame.grid_remove()
 
     def toggle_b_range_fields(self, _=None):
+        # Перемикає відображення полів для введення діапазону B,
+        # якщо обрано метод генерації.
         if self.b_choice.get() == "Generate":
             self.b_range_frame.grid()
         else:
             self.b_range_frame.grid_remove()
 
     def update_display(self, text_widget: tk.Text, data: np.ndarray, precision: int):
+        # Очищує текстове поле і вставляє нові рядки даних із заданою точністю.
+        # text_widget — поле, в яке виводяться дані
+        # data — масив чисел
+        # precision — кількість знаків після коми
         text_widget.config(state="normal")
         text_widget.delete(1.0, tk.END)
         for row in data:
@@ -280,6 +319,8 @@ class AppGui:
         text_widget.config(state="disabled")
 
     def update_metrics(self, metrics: dict):
+        # Виводить метрики помилок (MSE, RMSE, MAE, MAPE) у відповідні поля.
+        # metrics — словник з обчисленими значеннями
         self.mse_label.config(text=f"MSE: {metrics['mse']:.9f}")
         self.rmse_label.config(text=f"RMSE: {metrics['rmse']:.9f}")
         self.mae_label.config(text=f"MAE: {metrics['mae']:.9f}")

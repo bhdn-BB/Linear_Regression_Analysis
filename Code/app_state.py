@@ -1,7 +1,6 @@
 import dataclasses
 import numpy as np
 
-
 @dataclasses.dataclass()
 class AppState:
     ndarray_field = lambda: dataclasses.field(default_factory=lambda: np.array([]))  # noqa: E731
