@@ -1,5 +1,4 @@
 import tkinter as tk
-import random
 from tkinter import filedialog, messagebox, ttk
 import numpy as np
 
