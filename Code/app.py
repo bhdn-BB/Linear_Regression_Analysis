@@ -258,6 +258,14 @@ class App:
             return
         try:
             self.state.b_0 = float(self.gui.b_0_entry.get())
+
+            if not self.__check_bounds(self.state.b_0, self.MIN_VAL, self.MAX_VAL):
+                self.gui.b_0_entry.delete(0, tk.END)
+                self.gui.b_0_entry.insert(0, "1")
+                messagebox.showerror(
+                    "Error",
+                    f"Bounds B must be in the range [{self.MIN_VAL}, {self.MAX_VAL}]",
+                )
         except ValueError as e:
             messagebox.showerror("Error", f"Invalid B_0: {e}")
             return
