@@ -29,6 +29,12 @@ class App:
     MAX_PRECISION = 9
 
     def __init__(self, root: tk.Tk):
+        """
+        <summary>
+            Ініціалізує екземпляр додатку, налаштовує початковий стан та GUI.
+        </summary>
+        <param name="root">Кореневе вікно Tkinter для створення GUI.</param>
+        """
         self.input_handler = InputVectors(root)
         self.state = AppState()
         if os.path.exists("regression_state.json"):
@@ -38,6 +44,12 @@ class App:
         self.gui = AppGui(root, self)
 
     def save_state(self, filename="regression_state.json"):
+        """
+        <summary>
+            Зберігає поточний стан додатку у файл JSON.
+        </summary>
+        <param name="filename">Ім'я файлу для збереження стану (за замовчуванням "regression_state.json").</param>
+        """
         with open(filename, "w") as f:
             json.dump(
                 dataclasses.asdict(self.state), f, indent=4, default=lambda o: list(o)
@@ -45,9 +57,24 @@ class App:
 
     @staticmethod
     def __check_bounds(value, lower_limit, upper_limit):
+        """
+        <summary>
+            Перевіряє, чи належить значення заданому діапазону.
+        </summary>
+        <param name="value">Значення для перевірки.</param>
+        <param name="lower_limit">Нижня межа.</param>
+        <param name="upper_limit">Верхня межа.</param>
+        <returns>True, якщо значення в межах, інакше False.</returns>
+        """
         return lower_limit <= value <= upper_limit
 
     def apply_dimensions(self):
+        """
+        <summary>
+            Встановлює кількість спостережень та ознак на основі введених користувачем значень.
+            Перевіряє коректність введених даних і відображає результат у GUI.
+        </summary>
+        """
         try:
             self.state.n_obs = int(self.gui.obs_entry.get())
             self.state.n_feats = int(self.gui.feat_entry.get())
@@ -79,7 +106,12 @@ class App:
             return
 
     def apply_X(self):
-
+        """
+        <summary>
+            Завантажує або генерує матрицю ознак X згідно обраного методу введення:
+            Генерація випадкових даних, ручне введення або з файлу.
+        </summary>
+        """
         if not self.gui.x_choice.get():
             messagebox.showerror("Error", "Select input method for X")
             return
@@ -178,6 +210,11 @@ class App:
             messagebox.showerror("Error", "Failed to load design matrix X")
 
     def clear_state(self):
+        """
+        <summary>
+            Очищає всі дані в стані додатку та скидає поля GUI до значень за замовчуванням.
+        </summary>
+        """
         self.state = AppState()
         self.gui.update_display(self.gui.x_display, np.array([]), 0)
         self.gui.update_display(self.gui.y_display, np.array([]), 0)
@@ -205,6 +242,11 @@ class App:
         self.gui.mape_label.config(text="MAPE: N/A")
 
     def apply_noise(self):
+        """
+        <summary>
+            Генерує шум для регресійної моделі на основі параметрів E та σ від користувача.
+        </summary>
+        """
         if not self.state.n_obs or not self.state.n_feats:
             messagebox.showerror("Error", "Apply X dimensions first")
             return
@@ -250,6 +292,11 @@ class App:
         self.save_state()
 
     def apply_B(self):
+        """
+         <summary>
+             Завантажує або генерує вектор коефіцієнтів B згідно обраного методу введення та відображає його в GUI.
+         </summary>
+         """
         if not self.state.n_obs or not self.state.n_feats:
             messagebox.showerror("Error", "Apply X dimensions first")
             return
@@ -343,7 +390,13 @@ class App:
         self.save_state()
 
     def calculate_y_and_B_hat(self):
-
+        """
+        <summary>
+            Обчислює вектор цільових значень y за заданими X, B та шумом,
+            оцінює коефіцієнти B̂ методом найменших квадратів,
+            відображає отримані y і B̂ у GUI та оновлює метрики помилок.
+        </summary>
+        """
         if not np.any(self.state.data_X):
             messagebox.showerror("Error", "Data X cannot be None")
             return
