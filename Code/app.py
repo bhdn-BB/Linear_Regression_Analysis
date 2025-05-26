@@ -266,6 +266,7 @@ class App:
                     "Error",
                     f"Bounds B must be in the range [{self.MIN_VAL}, {self.MAX_VAL}]",
                 )
+                return
         except ValueError as e:
             messagebox.showerror("Error", f"Invalid B_0: {e}")
             return
